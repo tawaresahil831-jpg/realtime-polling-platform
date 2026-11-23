@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}{{ poll.question }} - Real-Time Polling Platform{% endblock %}
+
+{% block content %}
+<div class="poll-detail-wrapper" data-poll-id="{{ poll.id }}" data-has-voted="{{ 'true' if has_voted else 'false' }}" data-voted-option-id="{{ voted_option_id if voted_option_id else '' }}">
+    <div class="poll-header-card">
+        <a href="{{ url_for('index') }}" class="back-link">&larr; Back to all polls</a>
+        <h1 class="poll-question-title" id="poll-question-text">{{ poll.question }}</h1>
+        <div class="poll-meta-bar">
+            <span class="meta-item">Created on {{ poll.created_at|format_date }}</span>
+            <span class="meta-separator">&bull;</span>
+            <span class="meta-item live-pulse">
+                <span class="pulse-dot"></span> Live Updates (every 3s)
+            </span>
+        </div>
+    </div>
+
+    <!-- Inline Notices / Messages -->
+    <div id="duplicate-vote-notice" class="alert alert-warning" style="display: {% if has_voted %}flex{% else %}none{% endif %};">
+        <span class="alert-icon">ℹ️</span>
+        <div class="alert-content">
+            <strong>Notice:</strong> You have already voted on this poll. Showing real-time results below.
+        </div>
+    </div>
+
+    <div id="vote-success-notice" class="alert alert-success" style="display: none;">
+        <span class="alert-icon">✅</span>
+        <div class="alert-content">
+            <strong>Vote Confirmed!</strong> Thank you for participating. Your response has been recorded.
+        </div>
+    </div>
+
+    <div id="vote-error-notice" class="alert alert-error" style="display: none;"></div>
+
+    <!-- Section 1: Voting Form (Visible if user hasn't voted yet) -->
+    <div id="voting-section" class="card poll-voting-card" style="display: {% if has_voted %}none{% else %}block{% endif %};">
+        <h2 class="card-title">Cast Your Vote</h2>
+        <form id="vote-form">
+            <div class="voting-options-list" id="voting-options-list">
+                {% for option in options %}
+                <label class="voting-option-item" for="option-{{ option.id }}" id="option-label-{{ option.id }}">
+                    <input
+                        type="radio"
+                        id="option-{{ option.id }}"
+                        name="poll_option"
+                        value="{{ option.id }}"
+                        class="voting-radio"
+                        required
+                    >
+                    <span class="radio-custom"></span>
+                    <span class="option-text">{{ option.text }}</span>
+                </label>
+                {% endfor %}
+            </div>
+
+            <div class="voting-actions">
+                <button type="submit" id="btn-submit-vote" class="btn btn-primary btn-lg">
+                    <span class="btn-text-content">Submit Vote</span>
+                    <span class="btn-spinner" style="display: none;"></span>
+                </button>
+                <button type="button" id="btn-toggle-results" class="btn btn-outline">
+                    View Live Results &rarr;
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Section 2: Live Results View (Visible if user has voted or requested) -->
+    <div id="results-section" class="card poll-results-card" style="display: {% if has_voted %}block{% else %}none{% endif %};">
+        <div class="results-header">
+            <h2 class="card-title">Live Results</h2>
+            <div class="results-stats">
+                <span class="total-votes-tag">
+                    Total Votes: <strong id="total-votes-count">0</strong>
+                </span>
+                <span class="live-status-pill">
+                    <span class="status-indicator-dot"></span> Live
+                </span>
+            </div>
+        </div>
+
+        <div id="results-bars-container" class="results-bars-container">
+            <!-- Dynamic Results Bars rendered by JavaScript -->
+            <div class="results-loading-state">
+                <div class="spinner"></div>
+                <p>Loading real-time results...</p>
+            </div>
+        </div>
+
+        <div class="results-footer">
+            <div id="user-voted-badge-box" class="user-voted-badge-box" style="display: {% if has_voted %}flex{% else %}none{% endif %};">
+                <span class="badge-icon">🗳️</span>
+                <span>You voted: <strong id="user-voted-option-text">Option</strong></span>
+            </div>
+            <button type="button" id="btn-toggle-vote" class="btn btn-outline btn-sm" style="display: {% if has_voted %}none{% else %}inline-block{% endif %};">
+                &larr; Back to Voting Options
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        initPollPage({{ poll.id }});
+    });
+</script>
+{% endblock %}

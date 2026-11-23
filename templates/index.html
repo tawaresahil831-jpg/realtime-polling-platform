@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Explore Polls - Real-Time Polling Platform{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="hero-content">
+        <h1 class="hero-title">Real-Time Community Polls</h1>
+        <p class="hero-subtitle">Cast your vote, view live percentage bars, and create your own surveys with zero hassle.</p>
+    </div>
+    <div class="hero-actions">
+        <a href="{{ url_for('create_poll_page') }}" class="btn btn-primary btn-lg">+ Create New Poll</a>
+    </div>
+</div>
+
+{% if error_message %}
+<div class="alert alert-error">
+    {{ error_message }}
+</div>
+{% endif %}
+
+<div class="polls-container">
+    <div class="section-header">
+        <h2 class="section-title">Active Polls <span class="badge" id="polls-count">{{ polls|length }}</span></h2>
+        <a href="{{ url_for('index') }}" class="btn btn-outline btn-sm" title="Refresh Polls">🔄 Refresh</a>
+    </div>
+
+    {% if polls %}
+    <div class="polls-grid" id="polls-grid">
+        {% for poll in polls %}
+        <div class="poll-card" data-poll-id="{{ poll.id }}">
+            <div class="poll-card-header">
+                <span class="poll-date">{{ poll.created_at|format_date }}</span>
+                <span class="poll-votes-badge">
+                    🗳️ <strong>{{ poll.total_votes }}</strong> vote{{ 's' if poll.total_votes != 1 else '' }}
+                </span>
+            </div>
+            <h3 class="poll-card-question">
+                <a href="{{ url_for('poll_page', poll_id=poll.id) }}">{{ poll.question }}</a>
+            </h3>
+            <div class="poll-card-footer">
+                <a href="{{ url_for('poll_page', poll_id=poll.id) }}" class="btn btn-secondary btn-block">
+                    Participate &amp; View Results &rarr;
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-icon">🗳️</div>
+        <h3>No polls created yet!</h3>
+        <p>Be the first to ask a question and gather community opinions.</p>
+        <a href="{{ url_for('create_poll_page') }}" class="btn btn-primary mt-3">Create First Poll</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
