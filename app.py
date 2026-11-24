@@ -18,8 +18,6 @@ from flask import (
     abort,
     g,
     Response,
-    redirect,
-    url_for,
 )
 
 # Load environment variables

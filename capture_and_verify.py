@@ -19,11 +19,20 @@ def run():
         page = context.new_page()
 
         print("1. Testing Poll Creation...")
+        # Clean up any previous test polls with this exact question to avoid duplicates
+        import sqlite3
+        from db import get_db_path
+        conn = sqlite3.connect(get_db_path())
+        conn.execute("PRAGMA foreign_keys = ON;")
+        question_text = "Which cloud platform do you prefer for deploying web applications?"
+        conn.execute("DELETE FROM polls WHERE question = ?", (question_text,))
+        conn.commit()
+        conn.close()
+
         page.goto(f"{BASE_URL}/create")
         page.wait_for_selector("#create-poll-form")
 
         # Fill question
-        question_text = "Which cloud platform do you prefer for deploying web applications?"
         page.fill("#question-input", question_text)
 
         # Add 2 more options (initially 2, reaching 4 options)
@@ -123,7 +132,15 @@ def run():
         print(f"   Saved {screenshot5_path}")
 
         browser.close()
-        print("All screenshots successfully captured!")
+
+        # Clean up test poll after verification to keep database clean
+        conn = sqlite3.connect(get_db_path())
+        conn.execute("PRAGMA foreign_keys = ON;")
+        conn.execute("DELETE FROM polls WHERE question = ?", (question_text,))
+        conn.commit()
+        conn.close()
+
+        print("All screenshots successfully captured and test poll cleaned up!")
 
 if __name__ == "__main__":
     run()

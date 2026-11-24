@@ -279,31 +279,37 @@ Add the following in your Render service's **Environment** tab:
 
 ## Screenshots
 
-### 1. Poll Creation Form
+### 1. Home Page
+Live community poll explorer displaying real-time vote totals and active poll cards:
+![Home Page](screenshots/00-home-page.png)
+
+---
+
+### 2. Poll Creation Form
 Dynamic option builder allowing 2 to 6 unique choices with live character count:
 ![Poll Creation Form](screenshots/01-create-poll.png)
 
 ---
 
-### 2. Public Vote Casting
+### 3. Public Vote Casting
 Accessible radio button selection with modern cards and responsive layout:
 ![Vote Casting](screenshots/02-vote-casting.png)
 
 ---
 
-### 3. Live Results View
+### 4. Live Results View
 Horizontal percentage bars with smooth transitions, largest-remainder math, and personal vote highlight:
 ![Live Results View](screenshots/03-results-view.png)
 
 ---
 
-### 4. Duplicate Vote Notice
+### 5. Duplicate Vote Notice
 Friendly alert and 409 rejection when attempting to vote a second time, leaving vote counts unchanged:
 ![Duplicate Vote Notice](screenshots/04-duplicate-vote-notice.png)
 
 ---
 
-### 5. Mobile View (375px)
+### 6. Mobile View (375px)
 Fluid responsive layout optimized for mobile screens:
 ![Mobile View](screenshots/05-mobile-view.png)
 
